@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: car_rental_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-car_rental_db}
+      POSTGRES_USER: ${POSTGRES_USER:-carrental_owner}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ChangeThisSecurePassword123!}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - car_rental_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-carrental_owner} -d ${POSTGRES_DB:-car_rental_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Spring Boot Backend
+  backend:
+    build:
+      context: ../backend
+      dockerfile: ../docker/backend.Dockerfile
+    container_name: car_rental_backend
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: postgres
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-car_rental_db}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-carrental_owner}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-ChangeThisSecurePassword123!}
+      UPLOAD_DIR: /app/uploads
+    volumes:
+      - upload_data:/app/uploads
+    networks:
+      - car_rental_network
+
+  # Nginx Web Server & Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: car_rental_nginx
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ../frontend/dist:/usr/share/nginx/html:ro
+      - upload_data:/app/uploads:ro
+      - certbot_conf:/etc/letsencrypt
+      - certbot_www:/var/www/certbot
+    depends_on:
+      - backend
+    networks:
+      - car_rental_network
+
+networks:
+  car_rental_network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  upload_data:
+    driver: local
+  certbot_conf:
+    driver: local
+  certbot_www:
+    driver: local

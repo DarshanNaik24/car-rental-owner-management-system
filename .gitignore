@@ -1,0 +1,25 @@
+# Operating System
+.DS_Store
+Thumbs.db
+
+# Backend Build & IDE
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+.idea/
+*.iml
+.vscode/
+*.class
+
+# Frontend Dependencies & Build
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Application Uploads & Logs
+uploads/
+backend/uploads/
+*.log
+
+# Environment variables
+.env
+.env.local
