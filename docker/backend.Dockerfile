@@ -1,14 +1,14 @@
 # Multi-stage Dockerfile for Spring Boot Backend
-FROM eclipse-temurin:21-jdk-jammy AS build
+FROM maven:3.9-eclipse-temurin-21 AS build
 WORKDIR /app
 
-# Copy Maven wrapper & pom.xml
+# Cache dependencies
 COPY pom.xml .
-COPY src ./src
+RUN mvn dependency:go-offline -B || true
 
-# Install maven and package
-RUN apt-get update && apt-get install -y maven && \
-    mvn clean package -DskipTests
+# Copy source and package
+COPY src ./src
+RUN mvn clean package -DskipTests
 
 # Runtime Stage
 FROM eclipse-temurin:21-jre-jammy
@@ -18,7 +18,7 @@ WORKDIR /app
 RUN groupadd -r carrental && useradd -r -g carrental carrental && \
     mkdir -p /app/uploads && chown -R carrental:carrental /app
 
-# Copy jar from build stage
+# Copy executable jar from build stage
 COPY --from=build /app/target/car-rental-backend-*.jar app.jar
 
 USER carrental
@@ -28,4 +28,3 @@ ENV SPRING_PROFILES_ACTIVE=postgres \
     UPLOAD_DIR=/app/uploads
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
-
