@@ -8,6 +8,7 @@ import com.carrental.payment.dto.PaymentSummaryResponse;
 import com.carrental.payment.entity.Payment;
 import com.carrental.payment.entity.PaymentMethod;
 import com.carrental.payment.repository.PaymentRepository;
+import com.carrental.payment.specification.PaymentSpecification;
 import com.carrental.rental.entity.Rental;
 import com.carrental.rental.entity.RentalStatus;
 import com.carrental.rental.repository.RentalRepository;
@@ -70,7 +71,8 @@ public class PaymentService {
                                                 LocalDateTime endDate,
                                                 Pageable pageable) {
         String searchTerm = (search != null && !search.trim().isEmpty()) ? search.trim() : null;
-        return paymentRepository.searchPayments(searchTerm, rentalId, vehicleId, method, startDate, endDate, pageable)
+        var spec = PaymentSpecification.filter(searchTerm, rentalId, vehicleId, method, startDate, endDate);
+        return paymentRepository.findAll(spec, pageable)
                 .map(PaymentResponse::fromEntity);
     }
 
@@ -128,3 +130,4 @@ public class PaymentService {
         paymentRepository.delete(payment);
     }
 }
+

@@ -488,3 +488,4 @@ export const CarDetailPage = ({ carId, onBack, onSelectRental, onStartRental }) 
     </div>
   );
 };
+

@@ -61,3 +61,4 @@ public class InspectionResultRequest {
         this.photoUrl = photoUrl;
     }
 }
+

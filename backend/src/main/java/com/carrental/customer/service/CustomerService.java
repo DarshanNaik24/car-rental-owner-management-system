@@ -7,7 +7,11 @@ import com.carrental.customer.dto.CustomerResponse;
 import com.carrental.customer.entity.Customer;
 import com.carrental.customer.repository.CustomerRepository;
 import com.carrental.rental.entity.Rental;
+import com.carrental.rental.entity.RentalStatus;
 import com.carrental.rental.repository.RentalRepository;
+import com.carrental.vehicle.entity.Vehicle;
+import com.carrental.vehicle.entity.VehicleStatus;
+import com.carrental.vehicle.repository.VehicleRepository;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +26,14 @@ public class CustomerService {
 
     private final CustomerRepository customerRepository;
     private final RentalRepository rentalRepository;
+    private final VehicleRepository vehicleRepository;
 
-    public CustomerService(CustomerRepository customerRepository, @Lazy RentalRepository rentalRepository) {
+    public CustomerService(CustomerRepository customerRepository,
+                           @Lazy RentalRepository rentalRepository,
+                           @Lazy VehicleRepository vehicleRepository) {
         this.customerRepository = customerRepository;
         this.rentalRepository = rentalRepository;
+        this.vehicleRepository = vehicleRepository;
     }
 
     @Transactional(readOnly = true)
@@ -76,9 +84,16 @@ public class CustomerService {
 
     public void deleteCustomer(Long id) {
         Customer customer = getCustomerEntity(id);
-        long rentalCount = rentalRepository.countByCustomerId(id);
-        if (rentalCount > 0) {
-            throw new BusinessException("Cannot delete customer with existing rental history. Found " + rentalCount + " rental(s).");
+        List<Rental> rentals = rentalRepository.findByCustomerIdOrderByPickupDatetimeDesc(id);
+        for (Rental rental : rentals) {
+            if (rental.getStatus() == RentalStatus.ACTIVE) {
+                Vehicle v = rental.getVehicle();
+                if (v != null && v.getStatus() == VehicleStatus.RENTED) {
+                    v.setStatus(VehicleStatus.AVAILABLE);
+                    vehicleRepository.save(v);
+                }
+            }
+            rentalRepository.delete(rental);
         }
         customerRepository.delete(customer);
     }
@@ -119,3 +134,4 @@ public class CustomerService {
         target.setNotes(src.getNotes());
     }
 }
+

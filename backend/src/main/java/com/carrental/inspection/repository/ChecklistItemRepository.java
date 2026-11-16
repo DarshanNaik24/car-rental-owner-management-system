@@ -16,3 +16,4 @@ public interface ChecklistItemRepository extends JpaRepository<ChecklistItem, Lo
 
     boolean existsByItemNameIgnoreCase(String itemName);
 }
+

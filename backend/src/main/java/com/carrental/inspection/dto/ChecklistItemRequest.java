@@ -32,3 +32,4 @@ public class ChecklistItemRequest {
         this.category = category;
     }
 }
+

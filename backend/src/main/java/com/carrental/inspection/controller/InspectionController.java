@@ -81,3 +81,4 @@ public class InspectionController {
         return ResponseEntity.ok(ApiResponse.ok("Photo uploaded successfully", fileUrl));
     }
 }
+

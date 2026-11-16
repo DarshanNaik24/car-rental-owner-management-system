@@ -28,3 +28,4 @@ ENV SPRING_PROFILES_ACTIVE=postgres \
     UPLOAD_DIR=/app/uploads
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
+

@@ -14,6 +14,7 @@ import com.carrental.rental.dto.RentalResponse;
 import com.carrental.rental.entity.Rental;
 import com.carrental.rental.entity.RentalStatus;
 import com.carrental.rental.repository.RentalRepository;
+import com.carrental.rental.specification.RentalSpecification;
 import com.carrental.vehicle.entity.Vehicle;
 import com.carrental.vehicle.entity.VehicleStatus;
 import com.carrental.vehicle.repository.VehicleRepository;
@@ -219,7 +220,8 @@ public class RentalService {
                                               LocalDateTime endDate,
                                               Pageable pageable) {
         String searchTerm = (search != null && !search.trim().isEmpty()) ? search.trim() : null;
-        return rentalRepository.searchRentals(searchTerm, vehicleId, customerId, status, startDate, endDate, pageable)
+        var spec = RentalSpecification.filter(searchTerm, vehicleId, customerId, status, startDate, endDate);
+        return rentalRepository.findAll(spec, pageable)
                 .map(RentalResponse::fromEntity);
     }
 
@@ -243,13 +245,16 @@ public class RentalService {
         Rental rental = rentalRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Rental not found with id: " + id));
 
-        if (rental.getStatus() == RentalStatus.COMPLETED) {
-            throw new BusinessException("Completed rental records cannot be deleted to preserve business and tax audit history.");
-        }
+        // If the rental was ACTIVE, release the car back to AVAILABLE
         if (rental.getStatus() == RentalStatus.ACTIVE) {
-            throw new BusinessException("Cannot delete an active rental. Please cancel or complete it first.");
+            Vehicle vehicle = rental.getVehicle();
+            if (vehicle != null && vehicle.getStatus() == VehicleStatus.RENTED) {
+                vehicle.setStatus(VehicleStatus.AVAILABLE);
+                vehicleRepository.save(vehicle);
+            }
         }
 
         rentalRepository.delete(rental);
     }
 }
+

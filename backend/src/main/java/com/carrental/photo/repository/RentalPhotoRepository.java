@@ -18,3 +18,4 @@ public interface RentalPhotoRepository extends JpaRepository<RentalPhoto, Long> 
 
     List<RentalPhoto> findByRentalIdAndPhotoType(Long rentalId, PhotoType photoType);
 }
+

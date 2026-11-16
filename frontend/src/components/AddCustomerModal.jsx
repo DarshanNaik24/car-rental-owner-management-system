@@ -180,3 +180,4 @@ export const AddCustomerModal = ({ isOpen, onClose, onSuccess, customerToEdit })
     </Modal>
   );
 };
+

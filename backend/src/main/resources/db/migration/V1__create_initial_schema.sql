@@ -130,3 +130,4 @@ CREATE TABLE IF NOT EXISTS rental_photos (
 
 CREATE INDEX IF NOT EXISTS idx_photos_rental ON rental_photos(rental_id);
 CREATE INDEX IF NOT EXISTS idx_photos_vehicle ON rental_photos(vehicle_id);
+

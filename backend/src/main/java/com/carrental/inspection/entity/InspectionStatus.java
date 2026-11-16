@@ -5,3 +5,4 @@ public enum InspectionStatus {
     NOT_OK,
     NOT_APPLICABLE
 }
+

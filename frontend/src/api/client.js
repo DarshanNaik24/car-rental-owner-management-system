@@ -94,3 +94,4 @@ export const photoApi = {
 };
 
 export default api;
+

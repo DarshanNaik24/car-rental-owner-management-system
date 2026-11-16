@@ -11,3 +11,4 @@ public interface InspectionResultRepository extends JpaRepository<InspectionResu
 
     List<InspectionResult> findByInspectionId(Long inspectionId);
 }
+

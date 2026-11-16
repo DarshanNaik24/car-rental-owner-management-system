@@ -184,3 +184,4 @@ public class Vehicle {
         this.updatedAt = updatedAt;
     }
 }
+

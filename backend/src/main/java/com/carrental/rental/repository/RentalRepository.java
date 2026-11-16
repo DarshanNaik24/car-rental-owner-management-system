@@ -4,6 +4,7 @@ import com.carrental.rental.entity.Rental;
 import com.carrental.rental.entity.RentalStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface RentalRepository extends JpaRepository<Rental, Long> {
+public interface RentalRepository extends JpaRepository<Rental, Long>, JpaSpecificationExecutor<Rental> {
 
     List<Rental> findByVehicleIdOrderByPickupDatetimeDesc(Long vehicleId);
 
@@ -36,10 +37,10 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
            "(:startDate IS NULL OR r.pickupDatetime >= :startDate) AND " +
            "(:endDate IS NULL OR r.pickupDatetime <= :endDate) AND " +
            "(:search IS NULL OR " +
-           " LOWER(r.customer.fullName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           " r.customer.primaryPhone LIKE CONCAT('%', :search, '%') OR " +
-           " LOWER(r.vehicle.registrationNumber) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           " LOWER(r.vehicle.name) LIKE LOWER(CONCAT('%', :search, '%'))) " +
+           " LOWER(r.customer.fullName) LIKE LOWER(CAST(CONCAT('%', :search, '%') AS string)) OR " +
+           " r.customer.primaryPhone LIKE CAST(CONCAT('%', :search, '%') AS string) OR " +
+           " LOWER(r.vehicle.registrationNumber) LIKE LOWER(CAST(CONCAT('%', :search, '%') AS string)) OR " +
+           " LOWER(r.vehicle.name) LIKE LOWER(CAST(CONCAT('%', :search, '%') AS string))) " +
            "ORDER BY r.pickupDatetime DESC")
     Page<Rental> searchRentals(
             @Param("search") String search,
@@ -57,10 +58,10 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
            "(:startDate IS NULL OR r.pickupDatetime >= :startDate) AND " +
            "(:endDate IS NULL OR r.pickupDatetime <= :endDate) AND " +
            "(:search IS NULL OR " +
-           " LOWER(r.customer.fullName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           " r.customer.primaryPhone LIKE CONCAT('%', :search, '%') OR " +
-           " LOWER(r.vehicle.registrationNumber) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           " LOWER(r.vehicle.name) LIKE LOWER(CONCAT('%', :search, '%'))) " +
+           " LOWER(r.customer.fullName) LIKE LOWER(CAST(CONCAT('%', :search, '%') AS string)) OR " +
+           " r.customer.primaryPhone LIKE CAST(CONCAT('%', :search, '%') AS string) OR " +
+           " LOWER(r.vehicle.registrationNumber) LIKE LOWER(CAST(CONCAT('%', :search, '%') AS string)) OR " +
+           " LOWER(r.vehicle.name) LIKE LOWER(CAST(CONCAT('%', :search, '%') AS string))) " +
            "ORDER BY r.pickupDatetime DESC")
     List<Rental> filterRentalsList(
             @Param("search") String search,
@@ -81,3 +82,4 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
     @Query("SELECT r FROM Rental r ORDER BY r.createdAt DESC")
     List<Rental> findRecentRentals(Pageable pageable);
 }
+

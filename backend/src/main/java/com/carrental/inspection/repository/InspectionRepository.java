@@ -19,3 +19,4 @@ public interface InspectionRepository extends JpaRepository<Inspection, Long> {
 
     boolean existsByRentalIdAndType(Long rentalId, InspectionType type);
 }
+

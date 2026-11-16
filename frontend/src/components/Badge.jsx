@@ -46,3 +46,4 @@ export const Badge = ({ status, children, size = 'sm' }) => {
     </span>
   );
 };
+

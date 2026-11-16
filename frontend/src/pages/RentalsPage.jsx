@@ -20,6 +20,7 @@ import {
   Eye, 
   CreditCard,
   ClipboardCheck,
+  Trash2,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react';
@@ -45,6 +46,8 @@ export const RentalsPage = ({ onSelectRental, onNewRental }) => {
   const [inspectionType, setInspectionType] = useState('PICKUP');
   const [rentalToCancel, setRentalToCancel] = useState(null);
   const [isCancelling, setIsCancelling] = useState(false);
+  const [rentalToDelete, setRentalToDelete] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     loadVehicles();
@@ -100,10 +103,27 @@ export const RentalsPage = ({ onSelectRental, onNewRental }) => {
       success('Rental cancelled. Car is now available.');
       setRentalToCancel(null);
       loadRentals();
+      loadVehicles();
     } catch (err) {
-      error(err.message);
+      error(err.message || 'Failed to cancel rental');
     } finally {
       setIsCancelling(false);
+    }
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!rentalToDelete) return;
+    try {
+      setIsDeleting(true);
+      await rentalApi.delete(rentalToDelete.id);
+      success('Rental record and related history deleted');
+      setRentalToDelete(null);
+      loadRentals();
+      loadVehicles();
+    } catch (err) {
+      error(err.message || 'Failed to delete rental');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -155,7 +175,7 @@ export const RentalsPage = ({ onSelectRental, onNewRental }) => {
             ))}
           </div>
 
-          {/* Car Filter Dropdown */}
+          {/* Vehicle Dropdown Filter */}
           <div className="flex items-center gap-2">
             <select
               value={vehicleFilter}
@@ -163,27 +183,27 @@ export const RentalsPage = ({ onSelectRental, onNewRental }) => {
                 setVehicleFilter(e.target.value);
                 setPage(0);
               }}
-              className="px-3 py-1.5 text-xs rounded-xl border border-slate-200 bg-slate-50 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              className="text-xs bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-primary-500"
             >
               <option value="">All Cars</option>
               {vehicles.map((v) => (
                 <option key={v.id} value={v.id}>
-                  {v.registrationNumber} ({v.name})
+                  {v.name} ({v.registrationNumber})
                 </option>
               ))}
             </select>
           </div>
         </div>
 
-        {/* Search */}
+        {/* Search Bar */}
         <form onSubmit={handleSearchSubmit} className="relative">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
+            placeholder="Search by customer name, phone number, vehicle registration..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search by customer name, phone number, vehicle registration..."
-            className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-primary-500 bg-slate-50/50 font-medium"
+            className="w-full pl-10 pr-4 py-2 text-xs bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 transition"
           />
         </form>
       </div>
@@ -321,6 +341,14 @@ export const RentalsPage = ({ onSelectRental, onNewRental }) => {
                               <XCircle className="w-4 h-4" />
                             </button>
                           )}
+
+                          <button
+                            onClick={() => setRentalToDelete(r)}
+                            title="Delete Rental"
+                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -338,16 +366,16 @@ export const RentalsPage = ({ onSelectRental, onNewRental }) => {
               </span>
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => setPage((p) => Math.max(0, p - 1))}
                   disabled={page === 0}
-                  className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-40 transition"
+                  onClick={() => setPage((p) => Math.max(0, p - 1))}
+                  className="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-                  disabled={page >= totalPages - 1}
-                  className="p-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 disabled:opacity-40 transition"
+                  disabled={page + 1 >= totalPages}
+                  onClick={() => setPage((p) => p + 1)}
+                  className="p-1.5 border border-slate-200 rounded-lg hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <ChevronRight className="w-4 h-4" />
                 </button>
@@ -398,6 +426,18 @@ export const RentalsPage = ({ onSelectRental, onNewRental }) => {
         confirmText="Cancel Rental"
         danger={true}
         loading={isCancelling}
+      />
+
+      {/* Delete Rental Dialog */}
+      <ConfirmDialog
+        isOpen={!!rentalToDelete}
+        onClose={() => setRentalToDelete(null)}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Rental Record"
+        message={`Are you sure you want to delete Rental #${rentalToDelete?.id} (${rentalToDelete?.vehicle?.name} - ${rentalToDelete?.customer?.fullName})? This will also remove all its payments and inspections, and update reports accordingly. This action cannot be undone.`}
+        confirmText="Delete Rental"
+        danger={true}
+        loading={isDeleting}
       />
     </div>
   );

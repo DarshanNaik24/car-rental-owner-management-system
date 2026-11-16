@@ -225,15 +225,13 @@ export const CustomersPage = ({ onSelectRental }) => {
                           >
                             <Edit className="w-4 h-4" />
                           </button>
-                          {c.totalRentals === 0 && (
-                            <button
-                              onClick={() => setCustomerToDelete(c)}
-                              title="Delete Customer"
-                              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          )}
+                          <button
+                            onClick={() => setCustomerToDelete(c)}
+                            title="Delete Customer"
+                            className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -332,7 +330,11 @@ export const CustomersPage = ({ onSelectRental }) => {
         onClose={() => setCustomerToDelete(null)}
         onConfirm={handleDeleteConfirm}
         title="Delete Customer Record"
-        message={`Are you sure you want to delete ${customerToDelete?.fullName}? This can only be done for customers without rental history.`}
+        message={
+          customerToDelete?.totalRentals > 0
+            ? `Are you sure you want to delete ${customerToDelete?.fullName}? This customer has ${customerToDelete?.totalRentals} rental trip(s). Deleting this customer will also permanently delete their associated rental records, inspections, and payments. Active cars will be made available.`
+            : `Are you sure you want to delete ${customerToDelete?.fullName}? This action cannot be undone.`
+        }
         confirmText="Delete Customer"
         danger={true}
         loading={isDeleting}
@@ -340,3 +342,4 @@ export const CustomersPage = ({ onSelectRental }) => {
     </div>
   );
 };
+

@@ -330,3 +330,4 @@ export const CarsPage = ({ onSelectCar, onStartRentalForCar }) => {
     </div>
   );
 };
+

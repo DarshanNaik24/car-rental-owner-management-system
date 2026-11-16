@@ -22,12 +22,13 @@ public interface VehicleRepository extends JpaRepository<Vehicle, Long> {
     List<Vehicle> findByStatus(VehicleStatus status);
 
     @Query("SELECT v FROM Vehicle v WHERE " +
-           "(:search IS NULL OR LOWER(v.registrationNumber) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           " LOWER(v.name) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           " LOWER(v.manufacturer) LIKE LOWER(CONCAT('%', :search, '%'))) AND " +
+           "(:search IS NULL OR LOWER(v.registrationNumber) LIKE LOWER(CAST(CONCAT('%', :search, '%') AS string)) OR " +
+           " LOWER(v.name) LIKE LOWER(CAST(CONCAT('%', :search, '%') AS string)) OR " +
+           " LOWER(v.manufacturer) LIKE LOWER(CAST(CONCAT('%', :search, '%') AS string))) AND " +
            "(:status IS NULL OR v.status = :status) " +
            "ORDER BY v.createdAt DESC")
     List<Vehicle> searchVehicles(@Param("search") String search, @Param("status") VehicleStatus status);
 
     long countByStatus(VehicleStatus status);
 }
+

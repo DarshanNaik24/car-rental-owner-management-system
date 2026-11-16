@@ -88,3 +88,4 @@ public class InspectionResultResponse {
         this.photoUrl = photoUrl;
     }
 }
+

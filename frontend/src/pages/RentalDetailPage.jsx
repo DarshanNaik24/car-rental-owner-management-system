@@ -6,6 +6,7 @@ import { CompleteRentalModal } from '../components/CompleteRentalModal';
 import { RecordPaymentModal } from '../components/RecordPaymentModal';
 import { InspectionFormModal } from '../components/InspectionFormModal';
 import { InspectionCompareModal } from '../components/InspectionCompareModal';
+import { ConfirmDialog } from '../components/ConfirmDialog';
 import { useToast } from '../components/Toast';
 import { 
   ArrowLeft, 
@@ -23,7 +24,8 @@ import {
   CheckCircle2, 
   Upload,
   Plus,
-  Scale
+  Scale,
+  Trash2
 } from 'lucide-react';
 
 export const RentalDetailPage = ({ rentalId, onBack, onSelectCar }) => {
@@ -41,6 +43,22 @@ export const RentalDetailPage = ({ rentalId, onBack, onSelectCar }) => {
   const [inspectionTypeToRecord, setInspectionTypeToRecord] = useState('PICKUP');
   const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeletingRental, setIsDeletingRental] = useState(false);
+
+  const handleDeleteRental = async () => {
+    try {
+      setIsDeletingRental(true);
+      await rentalApi.delete(rentalId);
+      success('Rental record and associated history deleted');
+      setIsDeleteDialogOpen(false);
+      onBack?.();
+    } catch (err) {
+      error(err.message || 'Failed to delete rental');
+    } finally {
+      setIsDeletingRental(false);
+    }
+  };
 
   useEffect(() => {
     if (rentalId) {
@@ -148,6 +166,14 @@ export const RentalDetailPage = ({ rentalId, onBack, onSelectCar }) => {
           >
             <Scale className="w-3.5 h-3.5 text-primary-600" />
             <span>Compare Inspections</span>
+          </button>
+
+          <button
+            onClick={() => setIsDeleteDialogOpen(true)}
+            className="px-3.5 py-2 text-xs font-bold text-rose-600 bg-white border border-rose-200 hover:bg-rose-50 rounded-xl shadow-sm transition flex items-center gap-1.5"
+          >
+            <Trash2 className="w-3.5 h-3.5 text-rose-600" />
+            <span>Delete Rental</span>
           </button>
         </div>
       </div>
@@ -537,6 +563,19 @@ export const RentalDetailPage = ({ rentalId, onBack, onSelectCar }) => {
           rentalId={rental.id}
         />
       )}
+
+      {/* Delete Rental Confirmation */}
+      <ConfirmDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={handleDeleteRental}
+        title="Delete Rental Record"
+        message={`Are you sure you want to permanently delete Rental #${rental.id}? This will remove all its recorded payments, inspections, and photos. This cannot be undone.`}
+        confirmText="Delete Rental"
+        danger={true}
+        loading={isDeletingRental}
+      />
     </div>
   );
 };
+

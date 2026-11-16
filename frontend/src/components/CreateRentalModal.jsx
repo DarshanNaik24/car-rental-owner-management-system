@@ -426,3 +426,4 @@ export const CreateRentalModal = ({ isOpen, onClose, onSuccess, initialVehicleId
     </Modal>
   );
 };
+

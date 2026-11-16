@@ -237,3 +237,4 @@ No manual SQL execution is required upon deployment.
 - **Mileage Consistency**: Return odometer must be $\ge$ pickup odometer. Odometer of the car is automatically updated upon trip completion.
 - **Financial Precision**: All monetary fields (agreed rent, discounts, late charges, payments, and balances) use `BigDecimal` with exact scale.
 - **Audit History**: Completed rental records cannot be accidentally deleted to preserve financial audit and maintenance history.
+

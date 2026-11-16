@@ -6,6 +6,7 @@ import com.carrental.payment.entity.Payment;
 import com.carrental.rental.entity.Rental;
 import com.carrental.rental.entity.RentalStatus;
 import com.carrental.rental.repository.RentalRepository;
+import com.carrental.rental.specification.RentalSpecification;
 import com.carrental.report.dto.ComprehensiveReportResponse;
 import com.carrental.vehicle.entity.Vehicle;
 import com.carrental.vehicle.repository.VehicleRepository;
@@ -34,7 +35,7 @@ public class ReportService {
     }
 
     public ComprehensiveReportResponse generateReport(LocalDateTime startDate, LocalDateTime endDate, Long vehicleId) {
-        List<Rental> rentals = rentalRepository.filterRentalsList(null, vehicleId, null, null, startDate, endDate);
+        List<Rental> rentals = rentalRepository.findAll(RentalSpecification.filter(null, vehicleId, null, null, startDate, endDate));
 
         ComprehensiveReportResponse report = new ComprehensiveReportResponse();
 
@@ -140,3 +141,4 @@ public class ReportService {
         return report;
     }
 }
+

@@ -104,3 +104,4 @@ public class CarStatsResponse {
         this.recentRentalHistory = recentRentalHistory;
     }
 }
+

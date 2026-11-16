@@ -418,3 +418,4 @@ export const ReportsPage = ({ onSelectCar }) => {
     </div>
   );
 };
+

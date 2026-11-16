@@ -108,3 +108,4 @@ public class InspectionResult {
         this.createdAt = createdAt;
     }
 }
+

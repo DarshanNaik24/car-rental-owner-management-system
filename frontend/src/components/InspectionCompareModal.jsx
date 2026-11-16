@@ -194,3 +194,4 @@ export const InspectionCompareModal = ({ isOpen, onClose, rentalId }) => {
     </Modal>
   );
 };
+

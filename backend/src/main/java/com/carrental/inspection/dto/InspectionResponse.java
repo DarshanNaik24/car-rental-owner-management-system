@@ -129,3 +129,4 @@ public class InspectionResponse {
         this.createdAt = createdAt;
     }
 }
+

@@ -6,3 +6,4 @@ else
   echo "Error: mvn command not found on PATH" >&2
   exit 1
 fi
+

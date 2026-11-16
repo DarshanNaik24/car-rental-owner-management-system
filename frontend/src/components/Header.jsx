@@ -52,3 +52,4 @@ export const Header = ({ onOpenMobileMenu, onNewRental, onNewCar, title, subtitl
     </header>
   );
 };
+

@@ -75,3 +75,4 @@ public class CustomerRequest {
         this.notes = notes;
     }
 }
+

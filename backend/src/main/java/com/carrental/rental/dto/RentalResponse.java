@@ -295,3 +295,4 @@ public class RentalResponse {
         this.updatedAt = updatedAt;
     }
 }
+

@@ -132,3 +132,4 @@ public class Inspection {
         this.updatedAt = updatedAt;
     }
 }
+

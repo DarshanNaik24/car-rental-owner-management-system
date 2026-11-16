@@ -323,3 +323,4 @@ export const AddCarModal = ({ isOpen, onClose, onSuccess, carToEdit }) => {
     </Modal>
   );
 };
+

@@ -308,3 +308,4 @@ public class ComprehensiveReportResponse {
         this.monthlyReports = monthlyReports;
     }
 }
+

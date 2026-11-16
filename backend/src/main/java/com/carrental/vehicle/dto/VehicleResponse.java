@@ -157,3 +157,4 @@ public class VehicleResponse {
         this.updatedAt = updatedAt;
     }
 }
+

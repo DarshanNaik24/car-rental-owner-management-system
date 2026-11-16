@@ -66,3 +66,4 @@ public class CreateInspectionRequest {
         this.results = results;
     }
 }
+

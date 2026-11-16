@@ -100,3 +100,4 @@ export const Sidebar = ({ currentTab, setCurrentTab, mobileOpen, setMobileOpen }
     </>
   );
 };
+

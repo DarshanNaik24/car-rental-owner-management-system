@@ -14,3 +14,4 @@ INSERT INTO checklist_items (item_name, category, is_default, is_active) VALUES
 ('Charging cable', 'ACCESSORIES', true, true),
 ('Neck pillow', 'ACCESSORIES', true, true),
 ('Other accessories', 'ACCESSORIES', true, true);
+

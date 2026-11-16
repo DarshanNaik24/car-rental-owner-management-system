@@ -8,3 +8,4 @@ public enum PhotoType {
     ACCESSORY,
     OTHER
 }
+

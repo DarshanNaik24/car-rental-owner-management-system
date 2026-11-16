@@ -52,3 +52,4 @@ public class PhotoController {
         return ResponseEntity.ok(ApiResponse.ok("Photo deleted successfully", null));
     }
 }
+

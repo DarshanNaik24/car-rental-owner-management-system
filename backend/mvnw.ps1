@@ -5,3 +5,4 @@ if (Test-Path $mvnCmd) {
 } else {
     mvn $args
 }
+

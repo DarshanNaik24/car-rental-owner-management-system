@@ -16,3 +16,4 @@ spring:
 app:
   storage:
     upload-dir: ${UPLOAD_DIR:uploads}
+

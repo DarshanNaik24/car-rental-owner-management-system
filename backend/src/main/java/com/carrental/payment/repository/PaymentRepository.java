@@ -4,6 +4,7 @@ import com.carrental.payment.entity.Payment;
 import com.carrental.payment.entity.PaymentMethod;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public interface PaymentRepository extends JpaRepository<Payment, Long> {
+public interface PaymentRepository extends JpaRepository<Payment, Long>, JpaSpecificationExecutor<Payment> {
 
     List<Payment> findByRentalIdOrderByPaymentDatetimeDesc(Long rentalId);
 
@@ -25,10 +26,10 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
            "(:startDate IS NULL OR p.paymentDatetime >= :startDate) AND " +
            "(:endDate IS NULL OR p.paymentDatetime <= :endDate) AND " +
            "(:search IS NULL OR " +
-           " LOWER(p.rental.customer.fullName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           " p.rental.customer.primaryPhone LIKE CONCAT('%', :search, '%') OR " +
-           " LOWER(p.rental.vehicle.registrationNumber) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           " LOWER(p.referenceNumber) LIKE LOWER(CONCAT('%', :search, '%'))) " +
+           " LOWER(p.rental.customer.fullName) LIKE LOWER(CAST(CONCAT('%', :search, '%') AS string)) OR " +
+           " p.rental.customer.primaryPhone LIKE CAST(CONCAT('%', :search, '%') AS string) OR " +
+           " LOWER(p.rental.vehicle.registrationNumber) LIKE LOWER(CAST(CONCAT('%', :search, '%') AS string)) OR " +
+           " LOWER(p.referenceNumber) LIKE LOWER(CAST(CONCAT('%', :search, '%') AS string))) " +
            "ORDER BY p.paymentDatetime DESC")
     Page<Payment> searchPayments(
             @Param("search") String search,
@@ -48,3 +49,4 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     @Query("SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.paymentDatetime >= :startDate AND p.paymentDatetime <= :endDate")
     BigDecimal sumPaymentsBetween(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
 }
+

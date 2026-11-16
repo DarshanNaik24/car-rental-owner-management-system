@@ -19,9 +19,10 @@ public interface CustomerRepository extends JpaRepository<Customer, Long> {
     boolean existsByPrimaryPhoneAndIdNot(String primaryPhone, Long id);
 
     @Query("SELECT c FROM Customer c WHERE " +
-           "(:search IS NULL OR LOWER(c.fullName) LIKE LOWER(CONCAT('%', :search, '%')) OR " +
-           " c.primaryPhone LIKE CONCAT('%', :search, '%') OR " +
-           " LOWER(c.email) LIKE LOWER(CONCAT('%', :search, '%'))) " +
+           "(:search IS NULL OR LOWER(c.fullName) LIKE LOWER(CAST(CONCAT('%', :search, '%') AS string)) OR " +
+           " c.primaryPhone LIKE CAST(CONCAT('%', :search, '%') AS string) OR " +
+           " LOWER(c.email) LIKE LOWER(CAST(CONCAT('%', :search, '%') AS string))) " +
            "ORDER BY c.createdAt DESC")
     List<Customer> searchCustomers(@Param("search") String search);
 }
+

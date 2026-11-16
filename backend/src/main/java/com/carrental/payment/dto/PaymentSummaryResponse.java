@@ -71,3 +71,4 @@ public class PaymentSummaryResponse {
         this.unpaidRentalsCount = unpaidRentalsCount;
     }
 }
+

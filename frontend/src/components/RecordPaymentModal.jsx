@@ -162,3 +162,4 @@ export const RecordPaymentModal = ({ isOpen, onClose, onSuccess, rental }) => {
     </Modal>
   );
 };
+

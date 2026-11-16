@@ -61,3 +61,4 @@ public class MonthlyChartPoint {
         this.rentalCount = rentalCount;
     }
 }
+

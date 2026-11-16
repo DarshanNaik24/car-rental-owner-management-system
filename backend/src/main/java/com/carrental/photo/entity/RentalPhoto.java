@@ -124,3 +124,4 @@ public class RentalPhoto {
         this.createdAt = createdAt;
     }
 }
+

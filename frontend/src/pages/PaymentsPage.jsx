@@ -269,3 +269,4 @@ export const PaymentsPage = ({ onSelectRental }) => {
     </div>
   );
 };
+

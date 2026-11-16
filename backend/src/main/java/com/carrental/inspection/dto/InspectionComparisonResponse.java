@@ -192,3 +192,4 @@ public class InspectionComparisonResponse {
         this.items = items;
     }
 }
+

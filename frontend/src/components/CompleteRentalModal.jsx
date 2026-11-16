@@ -344,3 +344,4 @@ export const CompleteRentalModal = ({ isOpen, onClose, onSuccess, rental }) => {
     </Modal>
   );
 };
+

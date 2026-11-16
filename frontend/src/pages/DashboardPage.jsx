@@ -462,3 +462,4 @@ export const DashboardPage = ({ onNavigateTo, onSelectCar, onSelectRental }) => 
     </div>
   );
 };
+

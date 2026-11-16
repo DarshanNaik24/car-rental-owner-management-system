@@ -318,3 +318,4 @@ export const InspectionFormModal = ({ isOpen, onClose, onSuccess, rental, type =
     </Modal>
   );
 };
+

@@ -65,3 +65,4 @@ public class ChecklistItemResponse {
         this.isActive = isActive;
     }
 }
+

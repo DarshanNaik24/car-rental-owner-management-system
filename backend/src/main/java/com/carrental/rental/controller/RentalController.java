@@ -94,3 +94,4 @@ public class RentalController {
         return ResponseEntity.ok(ApiResponse.ok("Rental deleted successfully", null));
     }
 }
+

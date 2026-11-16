@@ -75,3 +75,4 @@ public class VehicleController {
         return ResponseEntity.ok(ApiResponse.ok("Vehicle deleted successfully", null));
     }
 }
+
